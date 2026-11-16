@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Soporte · Mesa de ayuda</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/3.1.5/css/dataTables.dataTables.css">
+
+  <style>
+    :root {
+      --ink: #20243a;
+      --muted: #85899d;
+      --line: #ececf2;
+      --purple: #6756d9;
+      --bg: #f7f7fb;
+      --green: #15966e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      font-size: 14px;
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    .app { min-height: 100vh; display: flex; }
+
+    .sidebar {
+      width: 248px;
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 25px 16px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      gap: 11px;
+      align-items: center;
+      padding: 0 12px 29px;
+      font-family: Manrope, sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .brand-mark {
+      width: 35px;
+      height: 35px;
+      border-radius: 11px;
+      background: var(--purple);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 19px;
+    }
+
+    .workspace {
+      margin: 0 8px 27px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .workspace-icon {
+      width: 31px;
+      height: 31px;
+      border-radius: 9px;
+      background: #f0edff;
+      color: var(--purple);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+
+    .workspace small, .profile small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+
+    .workspace strong, .profile strong { font-size: 12px; }
+
+    .nav-label {
+      color: #a1a3b3;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.15px;
+      padding: 0 12px 9px;
+      font-weight: 700;
+    }
+
+    .nav { display: grid; gap: 4px; }
+
+    .nav a {
+      color: #777b90;
+      text-decoration: none;
+      padding: 11px 12px;
+      border-radius: 9px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .nav a:hover { background: #f8f7ff; color: var(--purple); }
+    .nav a.active { background: #f1efff; color: var(--purple); font-weight: 700; }
+    .nav .ico { width: 18px; text-align: center; font-size: 16px; }
+    .nav-count { margin-left: auto; font-size: 11px; color: #9b9daf; }
+
+    .sidebar-spacer { flex: 1; }
+
+    .help-card {
+      margin: 10px 5px 18px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #f8f7ff;
+      border: 1px solid #efedfa;
+    }
+
+    .help-card b { display: block; margin-bottom: 5px; font-size: 12px; }
+
+    .help-card p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+      margin: 0 0 10px;
+    }
+
+    .help-card a {
+      color: var(--purple);
+      font-weight: 700;
+      font-size: 11px;
+      text-decoration: none;
+    }
+
+    .profile {
+      border-top: 1px solid var(--line);
+      padding: 16px 8px 0;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #fce7d6;
+      color: #a75b2c;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .profile .more { margin-left: auto; color: #9598a9; }
+
+    .main { flex: 1; min-width: 0; }
+
+    .topbar {
+      height: 74px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 38px;
+    }
+
+    .crumb { color: #999cad; }
+    .crumb b { color: #3a3d51; font-weight: 600; }
+
+    .top-actions { display: flex; align-items: center; gap: 15px; }
+
+    .icon-button {
+      border: 0;
+      background: transparent;
+      color: #85899d;
+      font-size: 18px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .dot {
+      position: absolute;
+      right: 0;
+      top: 1px;
+      width: 6px;
+      height: 6px;
+      background: #eb7979;
+      border: 1px solid white;
+      border-radius: 50%;
+    }
+
+    .content { max-width: 1320px; margin: 0 auto; padding: 34px 38px 55px; }
+
+    .welcome {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 27px;
+      gap: 15px;
+    }
+
+    .eyebrow { font-size: 12px; color: var(--muted); margin-bottom: 7px; }
+
+    .welcome h1 {
+      font-family: Manrope, sans-serif;
+      font-size: 25px;
+      letter-spacing: -.6px;
+      margin: 0 0 6px;
+    }
+
+    .welcome p { margin: 0; color: var(--muted); }
+
+    .primary {
+      border: 0;
+      background: var(--purple);
+      color: #fff;
+      border-radius: 9px;
+      padding: 11px 16px;
+      font: 600 13px "DM Sans", sans-serif;
+      cursor: pointer;
+      box-shadow: 0 4px 10px #6756d92b;
+    }
+
+    .primary:hover { background: #5745cb; }
+    .plus { font-size: 17px; vertical-align: -1px; margin-right: 5px; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+
+    .stat {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 19px;
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stat-icon {
+      width: 31px;
+      height: 31px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+    }
+
+    .stat:nth-child(1) .stat-icon { background: #f0edff; color: var(--purple); }
+    .stat:nth-child(2) .stat-icon { background: #fff3e6; color: #d58a31; }
+    .stat:nth-child(3) .stat-icon { background: #e8f7f1; color: var(--green); }
+    .stat:nth-child(4) .stat-icon { background: #edf2ff; color: #5c7fe4; }
+
+    .stat strong {
+      display: block;
+      font: 700 25px Manrope, sans-serif;
+      margin-top: 11px;
+    }
+
+    .stat-foot { color: #a0a2b0; font-size: 11px; margin-top: 5px; }
+    .stat-foot em { font-style: normal; color: var(--green); font-weight: 700; }
+
+    .panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 19px 21px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-head h2 { font: 700 15px Manrope, sans-serif; margin: 0 0 4px; }
+    .panel-head p { color: var(--muted); font-size: 11px; margin: 0; }
+
+    .filters { display: flex; gap: 8px; }
+
+    .filter-select {
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: #777b90;
+      padding: 0 10px;
+      font: 12px "DM Sans", sans-serif;
+      outline: none;
+    }
+
+    .filter-select:focus { border-color: #a99ef0; }
+
+    .table-wrap { padding: 0 12px 12px; overflow-x: auto; }
+
+    table.dataTable { width: 100% !important; border-collapse: collapse; }
+    table.dataTable thead th {
+      color: #999cad;
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: .7px;
+      font-weight: 700;
+    }
+
+    table.dataTable tbody td { font-size: 12px; vertical-align: middle; }
+    table.dataTable tbody tr { cursor: pointer; }
+    table.dataTable tbody tr:hover { background: #fcfbff; }
+
+    .ticket-title { font-weight: 600; color: #393c50; margin-bottom: 4px; }
+    .ticket-id { font-size: 10px; color: #a0a2b0; }
+
+    .person { display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+    .person .avatar { width: 28px; height: 28px; font-size: 10px; }
+    .person-name { font-weight: 500; }
+    .person-email { font-size: 10px; color: #a0a2b0; margin-top: 2px; }
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+    .badge:before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .status-open { background: #fff3e7; color: #cf8428; }
+    .status-progress { background: #edf2ff; color: #6481dc; }
+    .status-done { background: #e8f7f1; color: #198864; }
+    .priority-urgent { color: #d25757; }
+    .priority-high { color: #d28636; }
+    .priority-medium { color: #7180b3; }
+    .priority-low { color: #8d90a0; }
+    .category { color: #74788c; }
+    .date { color: #999cad; white-space: nowrap; }
+    .row-more { color: #a3a5b2; font-size: 18px; }
+
+    .empty { text-align: center; padding: 35px; color: #999cad; }
+
+    .toast {
+      position: fixed;
+      right: 25px;
+      bottom: 24px;
+      padding: 12px 17px;
+      background: #20243a;
+      color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px #16182933;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s;
+      z-index: 20;
+    }
+
+    .toast.show { transform: none; opacity: 1; }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: #17192b66;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 10;
+    }
+
+    .overlay.show { display: flex; }
+
+    .modal {
+      width: min(510px, 100%);
+      background: #fff;
+      border-radius: 15px;
+      padding: 24px;
+      box-shadow: 0 18px 60px #10122b30;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 21px; }
+    .modal h2 { font: 700 19px Manrope, sans-serif; margin: 0 0 5px; }
+    .modal p { font-size: 12px; color: var(--muted); margin: 0; }
+
+    .close {
+      border: 0;
+      background: #f6f6fa;
+      border-radius: 7px;
+      width: 30px;
+      height: 30px;
+      font-size: 18px;
+      color: #777;
+      cursor: pointer;
+    }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 6px; color: #55596d; }
+
+    .field input, .field textarea, .field select {
+      width: 100%;
+      border: 1px solid #e8e8ef;
+      border-radius: 8px;
+      padding: 10px 11px;
+      font: 12px "DM Sans", sans-serif;
+      outline: none;
+      color: var(--ink);
+    }
+
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: #a99ef0;
+      box-shadow: 0 0 0 3px #6756d914;
+    }
+
+    .field textarea { resize: vertical; min-height: 82px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 21px; }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #73778b;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font: 600 12px "DM Sans", sans-serif;
+      cursor: pointer;
+    }
+
+    .drawer {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: min(430px, 100%);
+      background: #fff;
+      z-index: 11;
+      box-shadow: -10px 0 40px #17192b17;
+      transform: translateX(105%);
+      transition: .25s;
+      padding: 27px;
+      overflow: auto;
+    }
+
+    .drawer.show { transform: none; }
+    .drawer-top { display: flex; justify-content: space-between; align-items: center; color: #999cad; font-size: 12px; }
+    .drawer h2 { font: 700 21px Manrope, sans-serif; line-height: 1.35; margin: 27px 0 13px; }
+    .drawer-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+    .drawer-section { border-top: 1px solid var(--line); margin-top: 25px; padding-top: 19px; }
+    .drawer-section h3 { font: 700 12px Manrope, sans-serif; margin: 0 0 13px; }
+    .drawer-desc { font-size: 13px; color: #717589; line-height: 1.7; }
+    .drawer-person { display: flex; align-items: center; gap: 10px; }
+    .drawer-actions { display: flex; gap: 8px; margin-top: 18px; }
+    .drawer-actions button { flex: 1; }
+
+    @media (max-width: 1000px) {
+      .sidebar { width: 210px; }
+      .content { padding: 28px 22px; }
+      .topbar { padding: 0 22px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 680px) {
+      .sidebar { display: none; }
+      .topbar { height: 60px; padding: 0 16px; }
+      .content { padding: 24px 14px; }
+      .welcome h1 { font-size: 21px; }
+      .welcome p { font-size: 12px; }
+      .stats { gap: 9px; }
+      .stat { padding: 13px; }
+      .stat strong { font-size: 21px; }
+      .stat-foot { font-size: 9px; }
+      .panel-head { align-items: flex-start; gap: 13px; flex-direction: column; }
+      .filters { width: 100%; }
+      .filter-select { flex: 1; min-width: 0; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">◈</span> Soporte<span style="color:var(--purple)"></span></div>
+
+    <div class="nav-label">Principal</div>
+    <nav class="nav">
+      <a class="active" href="#" data-view="panel"><span class="ico">▦</span> Panel de soporte</a>
+      <a href="#" data-view="todos"><span class="ico">▤</span> Todos los tickets <span class="nav-count" id="nav-total">7</span></a>
+      <a href="#" data-view="sin-resolver"><span class="ico">◷</span> Sin resolver <span class="nav-count" id="nav-open">3</span></a>
+      <a href="#" data-view="resueltos"><span class="ico">✓</span> Resueltos <span class="nav-count" id="nav-done">2</span></a>
+    </nav>
+
+    <div class="nav-label" style="margin-top:28px">Administrar</div>
+    <nav class="nav">
+      <a href="#tickets"><span class="ico">♧</span> Clientes</a>
+      <a href="#tickets"><span class="ico">◉</span> Equipo de soporte</a>
+      <a href="#tickets"><span class="ico">⚙</span> Configuración</a>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+    <div class="profile">
+      <span class="avatar">MR</span>
+      <span><small>Administrador</small><strong>María Rodríguez</strong></span>
+      <span class="more">•••</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb">Soporte&nbsp; / &nbsp;<b id="crumb-current">Panel de soporte</b></div>
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Notificaciones" onclick="toast('No tienes notificaciones nuevas')">♧<i class="dot"></i></button>
+        <span class="avatar" style="width:30px;height:30px;font-size:10px">MR</span>
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="welcome">
+        <div>
+          <div class="eyebrow" id="view-eyebrow">Panel de demostración</div>
+          <h1 id="view-title">¡Hola, María! <span style="font-size:22px">✦</span></h1>
+          <p id="view-subtitle">Aquí tienes el resumen de lo que pasa en soporte.</p>
+        </div>
+        <button class="primary" onclick="openModal()"><span class="plus">＋</span> Crear ticket</button>
+      </div>
+
+      <div class="stats" id="stats"></div>
+
+      <section class="panel" id="tickets">
+        <div class="panel-head">
+          <div>
+            <h2 id="panel-title">Tickets recientes</h2>
+            <p id="panel-sub">Revisa y gestiona las solicitudes de tu equipo.</p>
+          </div>
+          <div class="filters">
+            <select class="filter-select" id="status-filter">
+              <option value="Todos">Todos los estados</option>
+              <option value="Sin resolver">Sin resolver</option>
+              <option>Abierto</option>
+              <option>En progreso</option>
+              <option>Resuelto</option>
+            </select>
+            <select class="filter-select" id="priority-filter">
+              <option value="Todas">Prioridad</option>
+              <option>Urgente</option>
+              <option>Alta</option>
+              <option>Media</option>
+              <option>Baja</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tickets-table">
+            <thead>
+              <tr>
+                <th>Ticket</th>
+                <th>Solicitante</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Equipo</th>
+                <th>Creado</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="ticket-rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="overlay" id="overlay" onclick="if(event.target === this) closeModal()">
+  <form class="modal" id="ticket-form">
+    <div class="modal-head">
+      <div><h2>Crear nuevo ticket</h2><p>Completa los datos para registrar una solicitud.</p></div>
+      <button type="button" class="close" onclick="closeModal()">×</button>
+    </div>
+
+    <div class="field">
+      <label for="title">Asunto</label>
+      <input id="title" required placeholder="Ej. No puedo acceder a mi cuenta">
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="requester">Nombre del solicitante</label>
+        <input id="requester" required placeholder="Nombre y apellido">
+      </div>
+      <div class="field">
+        <label for="email">Correo electrónico</label>
+        <input id="email" type="email" required placeholder="nombre@empresa.cl">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="description">Descripción</label>
+      <textarea id="description" required placeholder="Cuéntanos qué sucede..."></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="team">Equipo asignado</label>
+        <select id="team">
+          <option>Aplicaciones</option>
+          <option>Acceso y cuentas</option>
+          <option>Hardware</option>
+          <option>Redes</option>
+          <option>Permisos</option>
+          <option>Dispositivos</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="priority">Prioridad</label>
+        <select id="priority">
+          <option>Baja</option>
+          <option>Media</option>
+          <option>Alta</option>
+          <option>Urgente</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="secondary" type="button" onclick="closeModal()">Cancelar</button>
+      <button class="primary" type="submit">Crear ticket</button>
+    </div>
+  </form>
+</div>
+
+<aside class="drawer" id="drawer">
+  <div class="drawer-top">
+    <span id="drawer-id">TK-0000</span>
+    <button class="close" onclick="closeDrawer()">×</button>
+  </div>
+  <h2 id="drawer-title"></h2>
+  <div class="drawer-meta" id="drawer-badges"></div>
+
+  <div class="drawer-section">
+    <h3>Descripción</h3>
+    <div class="drawer-desc" id="drawer-desc"></div>
+  </div>
+
+  <div class="drawer-section">
+    <h3>Solicitante</h3>
+    <div class="drawer-person" id="drawer-person"></div>
+  </div>
+
+  <div class="drawer-section">
+    <h3>Equipo asignado</h3>
+    <div id="drawer-team" class="drawer-desc"></div>
+  </div>
+
+  <div class="drawer-section">
+    <h3>Actualizar estado</h3>
+    <select class="filter-select" id="drawer-status" style="width:100%;height:40px">
+      <option>Abierto</option>
+      <option>En progreso</option>
+      <option>Resuelto</option>
+    </select>
+    <div class="drawer-actions">
+      <button class="secondary" onclick="closeDrawer()">Cerrar</button>
+      <button class="primary" onclick="saveStatus()">Guardar cambios</button>
+    </div>
+  </div>
+</aside>
+
+<script src="https://cdn.datatables.net/3.1.5/js/dataTables.js"></script>
+<script>
+  const tickets = [
+    {
+      id: "TK-1048",
+      title: "No puedo acceder a mi cuenta",
+      requester: "Camila Rojas",
+      email: "camila.rojas@empresa.cl",
+      team: "Acceso y cuentas",
+      priority: "Alta",
+      status: "Abierto",
+      date: "Hoy, 09:42",
+      initials: "CR",
+      color: "#eeeaff",
+      description: "Desde esta mañana no puedo iniciar sesión. El sistema indica que mi contraseña es incorrecta, pero ya la restablecí dos veces."
+    },
+    {
+      id: "TK-1047",
+      title: "Solicitud de acceso a carpeta compartida",
+      requester: "Diego Muñoz",
+      email: "diego.munoz@empresa.cl",
+      team: "Permisos",
+      priority: "Media",
+      status: "En progreso",
+      date: "Hoy, 09:18",
+      initials: "DM",
+      color: "#eaf1ff",
+      description: "Necesito acceso de lectura a la carpeta Proyectos 2026 para preparar el informe mensual."
+    },
+    {
+      id: "TK-1046",
+      title: "Monitor con pantalla parpadeante",
+      requester: "Fernanda Silva",
+      email: "fernanda.silva@empresa.cl",
+      team: "Hardware",
+      priority: "Media",
+      status: "En progreso",
+      date: "Hoy, 08:56",
+      initials: "FS",
+      color: "#fceaf1",
+      description: "La pantalla parpadea de forma intermitente, especialmente al conectar el notebook a la base."
+    },
+    {
+      id: "TK-1045",
+      title: "Error al generar reporte de ventas",
+      requester: "Matías Pérez",
+      email: "matias.perez@empresa.cl",
+      team: "Aplicaciones",
+      priority: "Urgente",
+      status: "Abierto",
+      date: "Ayer, 16:30",
+      initials: "MP",
+      color: "#e7f7f0",
+      description: "Al exportar el reporte de ventas de octubre aparece un error y el archivo queda vacío. Lo necesitamos para el cierre."
+    },
+    {
+      id: "TK-1044",
+      title: "Configurar correo en nuevo teléfono",
+      requester: "Valentina Soto",
+      email: "valentina.soto@empresa.cl",
+      team: "Dispositivos",
+      priority: "Baja",
+      status: "Resuelto",
+      date: "Ayer, 15:12",
+      initials: "VS",
+      color: "#fff0e5",
+      description: "Cambié mi teléfono y necesito volver a configurar el correo corporativo."
+    },
+    {
+      id: "TK-1043",
+      title: "VPN se desconecta al trabajar desde casa",
+      requester: "Javier Torres",
+      email: "javier.torres@empresa.cl",
+      team: "Redes",
+      priority: "Alta",
+      status: "Abierto",
+      date: "Ayer, 14:05",
+      initials: "JT",
+      color: "#fff6df",
+      description: "La conexión VPN se cae cada 10 o 15 minutos y debo conectarme nuevamente."
+    },
+    {
+      id: "TK-1042",
+      title: "Instalación de herramienta de diseño",
+      requester: "Antonia Vega",
+      email: "antonia.vega@empresa.cl",
+      team: "Aplicaciones",
+      priority: "Baja",
+      status: "Resuelto",
+      date: "Ayer, 11:40",
+      initials: "AV",
+      color: "#f0edff",
+      description: "Solicito instalar la herramienta de diseño aprobada para el equipo de Marketing."
+    }
+  ];
+
+  let currentView = "panel";
+
+  const VIEWS = {
+    "panel": {
+      crumb: "Panel de soporte",
+      eyebrow: "Panel de demostración",
+      title: '¡Hola, María! <span style="font-size:22px">✦</span>',
+      subtitle: "Aquí tienes el resumen de lo que pasa en soporte.",
+      panelTitle: "Tickets recientes",
+      panelSub: "Revisa y gestiona las solicitudes de tu equipo.",
+      status: null
+    },
+    "todos": {
+      crumb: "Todos los tickets",
+      eyebrow: "Tickets",
+      title: "Todos los tickets",
+      subtitle: "Historial completo de solicitudes, sin importar su estado.",
+      panelTitle: "Todas las solicitudes",
+      panelSub: "Busca y filtra por estado o prioridad.",
+      status: null
+    },
+    "sin-resolver": {
+      crumb: "Sin resolver",
+      eyebrow: "Tickets pendientes",
+      title: "Sin resolver",
+      subtitle: "Solicitudes abiertas o en progreso que requieren atención.",
+      panelTitle: "Pendientes del equipo",
+      panelSub: "Mostrando tickets abiertos y en progreso.",
+      status: "^\\s*(Abierto|En progreso)\\s*$"
+    },
+    "resueltos": {
+      crumb: "Resueltos",
+      eyebrow: "Tickets cerrados",
+      title: "Resueltos",
+      subtitle: "Solicitudes que el equipo ya completó.",
+      panelTitle: "Tickets resueltos",
+      panelSub: "Historial de solicitudes finalizadas.",
+      status: "^\\s*Resuelto\\s*$"
+    }
+  };
+
+  function statCard(label, icon, value, foot) {
+    return `
+      <article class="stat">
+        <div class="stat-top">${label} <span class="stat-icon">${icon}</span></div>
+        <strong>${value}</strong>
+        <div class="stat-foot">${foot}</div>
+      </article>`;
+  }
+
+  function statsFor(view) {
+    const count = fn => tickets.filter(fn).length;
+    const abiertos = count(t => t.status === "Abierto");
+    const progreso = count(t => t.status === "En progreso");
+    const resueltos = count(t => t.status === "Resuelto");
+    const sinResolver = abiertos + progreso;
+    const urgentes = count(t => t.status !== "Resuelto" && t.priority === "Urgente");
+
+    if (view === "todos") return [
+      statCard("Total de tickets", "▤", tickets.length, "Todos los estados"),
+      statCard("Abiertos", "◷", abiertos, "Esperando asignación"),
+      statCard("En progreso", "◔", progreso, "Siendo atendidos"),
+      statCard("Resueltos", "✓", resueltos, "Finalizados")
+    ];
+    if (view === "sin-resolver") return [
+      statCard("Sin resolver", "◷", sinResolver, "Requieren atención del equipo"),
+      statCard("Abiertos", "▤", abiertos, "Aún sin atender"),
+      statCard("En progreso", "◔", progreso, "Siendo atendidos"),
+      statCard("Urgentes", "!", urgentes, "Prioridad máxima")
+    ];
+    if (view === "resueltos") return [
+      statCard("Resueltos", "✓", resueltos, "Total acumulado"),
+      statCard("Resueltos hoy", "✓", 12, "<em>↑ 8%</em> vs. semana pasada"),
+      statCard("Tiempo de resolución", "◷", "3h 10m", "Promedio de esta semana"),
+      statCard("Satisfacción", "★", "94%", "Valoración de los usuarios")
+    ];
+    return [
+      statCard("Total de tickets", "▤", tickets.length, "<em>↑ 12%</em> vs. semana pasada"),
+      statCard("Sin resolver", "◷", sinResolver, "Requieren atención del equipo"),
+      statCard("Resueltos hoy", "✓", 12, "<em>↑ 8%</em> vs. semana pasada"),
+      statCard("Tiempo de respuesta", "◷", "1h 24m", "Promedio de esta semana")
+    ];
+  }
+
+  function updateView() {
+    const v = VIEWS[currentView];
+    document.getElementById("crumb-current").textContent = v.crumb;
+    document.getElementById("view-eyebrow").textContent = v.eyebrow;
+    document.getElementById("view-title").innerHTML = v.title;
+    document.getElementById("view-subtitle").textContent = v.subtitle;
+    document.getElementById("panel-title").textContent = v.panelTitle;
+    document.getElementById("panel-sub").textContent = v.panelSub;
+    document.getElementById("stats").innerHTML = statsFor(currentView).join("");
+    // En las vistas con estado fijo, el filtro de estado no tiene sentido.
+    document.getElementById("status-filter").style.display = v.status ? "none" : "";
+    document.querySelectorAll("[data-view]").forEach(link => {
+      link.classList.toggle("active", link.dataset.view === currentView);
+    });
+  }
+
+  function setView(view) {
+    currentView = view;
+    document.getElementById("status-filter").value = "Todos";
+    document.getElementById("priority-filter").value = "Todas";
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  let selectedTicketId = null;
+  let dataTable = null;
+  let toastTimer = null;
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[character]);
+  }
+
+  function statusClass(status) {
+    if (status === "Abierto") return "status-open";
+    if (status === "Resuelto") return "status-done";
+    return "status-progress";
+  }
+
+  function priorityClass(priority) {
+    const classes = {
+      "Urgente": "priority-urgent",
+      "Alta": "priority-high",
+      "Media": "priority-medium",
+      "Baja": "priority-low"
+    };
+    return classes[priority] || "priority-low";
+  }
+
+  function toast(message) {
+    const element = document.getElementById("toast");
+    element.textContent = message;
+    element.classList.add("show");
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => element.classList.remove("show"), 2600);
+  }
+
+  function render() {
+    const rows = document.getElementById("ticket-rows");
+
+    // Destruir la tabla antes de cambiar sus filas.
+    if (dataTable) {
+      dataTable.destroy();
+      dataTable = null;
+    }
+
+    // Incluir todos los tickets; DataTables aplicará los filtros.
+    rows.innerHTML = tickets.map(ticket => `
+      <tr data-ticket-id="${escapeHtml(ticket.id)}">
+        <td>
+          <div class="ticket-title">${escapeHtml(ticket.title)}</div>
+          <div class="ticket-id">${escapeHtml(ticket.id)}</div>
+        </td>
+        <td>
+          <div class="person">
+            <span class="avatar" style="background:${escapeHtml(ticket.color)}">
+              ${escapeHtml(ticket.initials)}
+            </span>
+            <span>
+              <span class="person-name">${escapeHtml(ticket.requester)}</span>
+              <span class="person-email" style="display:block">${escapeHtml(ticket.email)}</span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <span class="badge ${statusClass(ticket.status)}">${escapeHtml(ticket.status)}</span>
+        </td>
+        <td>
+          <span class="${priorityClass(ticket.priority)}">● &nbsp;${escapeHtml(ticket.priority)}</span>
+        </td>
+        <td class="category">${escapeHtml(ticket.team)}</td>
+        <td class="date">${escapeHtml(ticket.date)}</td>
+        <td class="row-more">···</td>
+      </tr>
+    `).join("");
+
+    document.getElementById("nav-total").textContent = tickets.length;
+    document.getElementById("nav-open").textContent =
+      tickets.filter(ticket => ticket.status !== "Resuelto").length;
+    document.getElementById("nav-done").textContent =
+      tickets.filter(ticket => ticket.status === "Resuelto").length;
+    updateView();
+
+    dataTable = new DataTable("#tickets-table", {
+      pageLength: 5,
+      lengthChange: false,
+      order: [[0, "desc"]],
+      language: {
+        search: "Buscar:",
+        info: "Mostrando _START_ a _END_ de _TOTAL_ tickets",
+        infoEmpty: "No hay tickets para mostrar",
+        infoFiltered: "(filtrado de _MAX_ tickets en total)",
+        zeroRecords: "No se encontraron tickets",
+        paginate: {
+          first: "Primero",
+          last: "Último",
+          next: "Siguiente",
+          previous: "Anterior"
+        }
+      }
+    });
+
+    // Columna 2 = Estado; columna 3 = Prioridad.
+    const estado = document.getElementById("status-filter").value;
+    const prioridad = document.getElementById("priority-filter").value;
+
+    let buscarEstado = "";
+    if (VIEWS[currentView].status) {
+      buscarEstado = VIEWS[currentView].status;
+    } else if (estado === "Sin resolver") {
+      buscarEstado = "^\\s*(Abierto|En progreso)\\s*$";
+    } else if (estado !== "Todos") {
+      buscarEstado = `^\\s*${estado}\\s*$`;
+    }
+
+    const buscarPrioridad =
+      prioridad === "Todas" ? "" : `${prioridad}\\s*$`;
+
+    dataTable.column(2).search(buscarEstado, true, false);
+    dataTable.column(3).search(buscarPrioridad, true, false);
+    dataTable.draw();
+  }
+
+  function openModal() {
+    document.getElementById("overlay").classList.add("show");
+    setTimeout(() => document.getElementById("title").focus(), 50);
+  }
+
+  function closeModal() {
+    document.getElementById("overlay").classList.remove("show");
+  }
+
+  document.getElementById("ticket-form").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const requester = document.getElementById("requester").value.trim();
+    const initials = requester
+      .split(/\s+/)
+      .slice(0, 2)
+      .map(part => part[0])
+      .join("")
+      .toUpperCase();
+
+    const nextNumber = Math.max(
+      1041,
+      ...tickets.map(ticket => Number(ticket.id.replace("TK-", "")))
+    ) + 1;
+
+    tickets.unshift({
+      id: `TK-${nextNumber}`,
+      title: document.getElementById("title").value.trim(),
+      requester,
+      email: document.getElementById("email").value.trim(),
+      team: document.getElementById("team").value,
+      priority: document.getElementById("priority").value,
+      status: "Abierto",
+      date: "Ahora mismo",
+      initials,
+      color: "#f0edff",
+      description: document.getElementById("description").value.trim()
+    });
+
+    event.target.reset();
+    closeModal();
+    render();
+    toast("Ticket creado correctamente");
+  });
+
+  function openTicket(ticketId) {
+    const ticket = tickets.find(item => item.id === ticketId);
+    if (!ticket) return;
+
+    selectedTicketId = ticketId;
+
+    document.getElementById("drawer-id").textContent = ticket.id;
+    document.getElementById("drawer-title").textContent = ticket.title;
+    document.getElementById("drawer-desc").textContent = ticket.description;
+    document.getElementById("drawer-team").textContent = ticket.team;
+    document.getElementById("drawer-person").innerHTML = `
+      <span class="avatar">${escapeHtml(ticket.initials)}</span>
+      <span>
+        <b>${escapeHtml(ticket.requester)}</b>
+        <span class="person-email" style="display:block">${escapeHtml(ticket.email)}</span>
+      </span>`;
+
+    document.getElementById("drawer-badges").innerHTML = `
+      <span class="badge ${statusClass(ticket.status)}">${escapeHtml(ticket.status)}</span>
+      <span class="badge ${priorityClass(ticket.priority)}">${escapeHtml(ticket.priority)}</span>`;
+
+    document.getElementById("drawer-status").value = ticket.status;
+    document.getElementById("drawer").classList.add("show");
+  }
+
+  function closeDrawer() {
+    document.getElementById("drawer").classList.remove("show");
+  }
+
+  function saveStatus() {
+    const ticket = tickets.find(item => item.id === selectedTicketId);
+    if (!ticket) return;
+
+    ticket.status = document.getElementById("drawer-status").value;
+    render();
+    openTicket(ticket.id);
+    toast("Estado del ticket actualizado");
+  }
+
+  document.getElementById("ticket-rows").addEventListener("click", event => {
+    const row = event.target.closest("tr[data-ticket-id]");
+    if (row) openTicket(row.dataset.ticketId);
+  });
+
+  document.getElementById("status-filter").addEventListener("change", render);
+  document.getElementById("priority-filter").addEventListener("change", render);
+
+  document.querySelectorAll("[data-view]").forEach(link => {
+    link.addEventListener("click", event => {
+      event.preventDefault();
+      setView(link.dataset.view);
+    });
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeModal();
+      closeDrawer();
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      document.querySelector(".dt-search input")?.focus();
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>
